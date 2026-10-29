@@ -158,6 +158,8 @@
   }
   dialog .fermer:focus-visible { outline: 2px solid var(--braise); }
   dialog .boite { position: relative; }
+  dialog .whatsapp { display: block; margin: 0 18px 20px; text-align: center; box-shadow: none; }
+  dialog .whatsapp:hover, dialog .whatsapp:focus-visible { transform: none; box-shadow: none; background: var(--braise); }
 
 
   /* Fantôme qui traverse l'écran */
@@ -265,7 +267,7 @@
       <div class="tete">
         <div>
           <h2>Les masques</h2>
-          <p>Touche un masque pour l'agrandir. Retiens son numéro pour le demander au stand du BDE.</p>
+          <p>Touche un masque pour l'agrandir, puis commande-le directement sur WhatsApp.</p>
         </div>
         <div class="filtres" role="group" aria-label="Filtrer par style">
           <button type="button" id="f-tous" data-filtre="tous" aria-pressed="true">Tous</button>
@@ -288,7 +290,7 @@
       </div>
       <div>
         <h3>Comment réserver</h3>
-        <p>Envoie le numéro du masque à un membre du BDE. Les quantités sont limitées, premier arrivé, premier masqué.</p>
+        <p>Choisis ton masque et appuie sur « Commander sur WhatsApp » : la photo et le numéro du masque sont envoyés au BDE. Les quantités sont limitées, premier arrivé, premier masqué.</p>
       </div>
       <div>
         <h3>La soirée</h3>
@@ -310,6 +312,7 @@
     <figure>
       <img id="v-img" src="" alt="">
       <figcaption><b id="v-nom"></b><span id="v-info"></span></figcaption>
+      <a class="bouton whatsapp" id="v-whatsapp" href="#" target="_blank" rel="noopener">Commander sur WhatsApp</a>
     </figure>
     <button type="button" class="fermer" id="v-fermer" aria-label="Fermer">×</button>
   </div>
@@ -342,6 +345,8 @@
     { nom: "Jason blanc", style: "jason", prix: "1 650 FCFA" }
   ].map((m, i) => ({ ...m, num: String(i + 1).padStart(2, "0"), prix: m.prix || "3 750 FCFA" }));
 
+  // Numéro WhatsApp du BDE (0151291319) au format international, indicatif du Bénin
+  const WHATSAPP = "2290151291319";
   const IMAGES = window.IMAGES_MASQUES || MASQUES.map(m => `assets/masques/masque-${m.num}.jpg`);
   const grille = document.getElementById("grille");
   const dlg = document.getElementById("visionneuse");
@@ -365,6 +370,10 @@
     document.getElementById("v-img").alt = m.nom;
     document.getElementById("v-nom").textContent = m.nom;
     document.getElementById("v-info").textContent = `N°${m.num} · ${m.prix}`;
+    // WhatsApp ne permet pas de joindre un fichier par lien : on envoie l'adresse de la photo, affichée en aperçu
+    const photo = new URL(IMAGES[+b.dataset.i], location.href).href;
+    const message = `Bonjour, je veux le masque N°${m.num} « ${m.nom} » (${m.prix}).\n${photo}`;
+    document.getElementById("v-whatsapp").href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(message)}`;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) { dlg.showModal(); return; }
     carteOrigine = b.querySelector("img");
     // Un fantôme sort de la photo, puis le masque s'agrandit
