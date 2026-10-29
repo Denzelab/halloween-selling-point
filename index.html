@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Masques Halloween BDE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Creepster&family=Abril+Fatface&family=Roboto:wght@400;500;700;900&display=swap">
+<style>
+  /* Layout: affiche fixe en fond, assombrie ; bandeau événement, puis catalogue en grille de fiches numérotées */
+  :root {
+    --nuit: #0b0908;
+    --encre: #151110;
+    --citrouille: #ff6a13;
+    --braise: #ff9a00;
+    --os: #f3ece4;
+    --cendre: #a69a90;
+    --font-cri: "Creepster", "Impact", fantasy;
+    --font-date: "Abril Fatface", Georgia, serif;
+    --font-texte: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--nuit);
+    color: var(--os);
+    font: 400 16px/1.6 var(--font-texte);
+    -webkit-font-smoothing: antialiased;
+  }
+  .fond {
+    position: fixed; inset: 0; z-index: -1;
+    background:
+      linear-gradient(180deg, rgba(11,9,8,.55) 0%, rgba(11,9,8,.82) 55%, rgba(11,9,8,.95) 100%),
+      url("assets/affiche.jpeg") center top / cover no-repeat,
+      var(--nuit);
+  }
+  .bande {
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .cadre { max-width: 1120px; margin: 0 auto; }
+
+  /* En-tête */
+  header.bande { padding-block: 20px; }
+  header .cadre { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .logo { display: block; height: 56px; width: auto; }
+  nav { display: flex; gap: 20px; flex-wrap: wrap; }
+  nav a {
+    color: var(--os); text-decoration: none; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .12em; font-size: 13px;
+    padding-block: 6px; border-bottom: 2px solid transparent;
+  }
+  nav a:hover, nav a:focus-visible { border-color: var(--citrouille); outline: none; }
+
+  /* Héros */
+  .heros.bande { padding-block: 48px 64px; }
+  .heros .cadre { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 48px; align-items: center; }
+  .surtitre {
+    color: var(--braise); font-weight: 900; text-transform: uppercase;
+    letter-spacing: .2em; font-size: 13px; margin: 0 0 8px;
+  }
+  h1 {
+    font-family: var(--font-cri); font-weight: 400;
+    color: var(--citrouille);
+    font-size: clamp(56px, 11vw, 132px); line-height: .9;
+    margin: 0; letter-spacing: .02em; text-wrap: balance;
+    text-shadow: 0 0 40px rgba(255,106,19,.35);
+  }
+  .accroche { font-size: clamp(18px, 2.2vw, 21px); max-width: 34ch; margin: 20px 0 28px; color: var(--os); }
+  .infos { display: flex; flex-wrap: wrap; gap: 12px 28px; margin: 0 0 32px; padding: 0; list-style: none; }
+  .infos li { display: flex; flex-direction: column; }
+  .infos .lib { font-size: 12px; text-transform: uppercase; letter-spacing: .14em; color: var(--cendre); }
+  .infos .val { font-weight: 900; font-size: 20px; text-transform: uppercase; }
+  .bouton {
+    display: inline-block; background: var(--citrouille); color: var(--nuit);
+    font-weight: 900; text-transform: uppercase; letter-spacing: .1em; font-size: 15px;
+    padding: 14px 26px; text-decoration: none; border-radius: 2px;
+    box-shadow: 6px 6px 0 var(--os);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .bouton:hover, .bouton:focus-visible { transform: translate(3px,3px); box-shadow: 3px 3px 0 var(--os); outline: none; }
+  .affiche-mini {
+    display: block; width: 100%; max-width: 420px; justify-self: end;
+    border: 3px solid var(--citrouille);
+    transform: rotate(2.5deg);
+    box-shadow: 0 30px 60px rgba(0,0,0,.7);
+  }
+
+  /* Bandeau date */
+  .date.bande { background: var(--citrouille); color: var(--nuit); padding-block: 14px; overflow: hidden; }
+  .date .cadre { display: flex; justify-content: space-between; align-items: baseline; gap: 12px 32px; flex-wrap: wrap; }
+  .date strong { font-family: var(--font-date); font-weight: 400; font-size: clamp(30px, 5vw, 44px); line-height: 1; }
+  .date span { font-weight: 900; text-transform: uppercase; letter-spacing: .1em; }
+
+  /* Catalogue */
+  .catalogue.bande { padding-block: 72px 56px; background: rgba(11,9,8,.6); }
+  .tete { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 32px; }
+  h2 {
+    font-family: var(--font-cri); font-weight: 400; color: var(--citrouille);
+    font-size: clamp(40px, 6vw, 64px); line-height: 1; margin: 0; letter-spacing: .03em;
+  }
+  .tete p { margin: 8px 0 0; color: var(--cendre); max-width: 46ch; }
+  .filtres { display: flex; gap: 8px; flex-wrap: wrap; }
+  .filtres button {
+    font: 700 13px/1 var(--font-texte); text-transform: uppercase; letter-spacing: .1em;
+    color: var(--os); background: transparent; border: 1.5px solid #4a3f38;
+    padding: 10px 14px; border-radius: 999px; cursor: pointer;
+  }
+  .filtres button:hover { border-color: var(--citrouille); }
+  .filtres button:focus-visible { outline: 2px solid var(--braise); outline-offset: 2px; }
+  .filtres button[aria-pressed="true"] { background: var(--citrouille); border-color: var(--citrouille); color: var(--nuit); }
+
+  .grille { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; list-style: none; margin: 0; padding: 0; }
+  .fiche { margin: 0; }
+  .fiche button {
+    all: unset; cursor: zoom-in; display: block; width: 100%;
+    background: var(--encre); border: 1px solid #2a221e;
+    transition: transform .2s, border-color .2s, box-shadow .2s;
+  }
+  .fiche button:hover, .fiche button:focus-visible {
+    transform: translateY(-4px); border-color: var(--citrouille);
+    box-shadow: 0 14px 30px rgba(255,106,19,.18);
+  }
+  .fiche img { display: block; width: 100%; max-width: 100%; aspect-ratio: 1; object-fit: cover; }
+  .legende { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 12px 14px 14px; }
+  .legende b { font-weight: 700; font-size: 15px; line-height: 1.3; }
+  .legende small { color: var(--braise); font-weight: 900; font-variant-numeric: tabular-nums; letter-spacing: .06em; white-space: nowrap; }
+  .legende .prix { display: block; color: var(--cendre); font-size: 13px; margin-top: 2px; }
+
+  /* Infos pratiques */
+  .pratique.bande { padding-block: 56px 72px; }
+  .pratique .cadre { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+  .pratique h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .16em; color: var(--braise); margin: 0 0 8px; }
+  .pratique p { margin: 0; max-width: 38ch; }
+  footer.bande { padding-block: 24px; border-top: 1px solid #2a221e; color: var(--cendre); font-size: 13px; }
+  footer .cadre { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+  /* Visionneuse */
+  dialog {
+    border: 0; padding: 0; background: transparent; color: var(--os);
+    max-width: min(560px, calc(100vw - 32px)); width: 100%;
+  }
+  dialog::backdrop { background: rgba(5,4,3,.88); animation: voile .45s ease-out; }
+  dialog.ferme::backdrop { opacity: 0; transition: opacity .3s ease-in; }
+  @keyframes voile { from { opacity: 0; } to { opacity: 1; } }
+  dialog figure { margin: 0; background: var(--encre); border: 2px solid var(--citrouille); }
+  dialog img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+  dialog figcaption { padding: 16px 18px 20px; display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+  dialog figcaption b { font-size: 20px; }
+  dialog .fermer {
+    position: absolute; top: 8px; right: 8px; width: 40px; height: 40px;
+    border-radius: 50%; border: 0; background: var(--nuit); color: var(--os);
+    font: 700 22px/1 var(--font-texte); cursor: pointer;
+  }
+  dialog .fermer:focus-visible { outline: 2px solid var(--braise); }
+  dialog .boite { position: relative; }
+
+
+  /* Fantôme qui traverse l'écran */
+  .fantome {
+    position: fixed; left: 0; top: 30vh; z-index: 50; pointer-events: none;
+    width: clamp(90px, 14vw, 170px); height: auto;
+    opacity: 0; will-change: transform, opacity;
+    filter: drop-shadow(0 0 18px rgba(255,255,255,.35)) drop-shadow(0 0 40px rgba(255,106,19,.25));
+    display: none; /* grand fantôme retiré, son dessin sert de modèle aux petits */
+  }
+  .fantome .corps { animation: flotte 1.6s ease-in-out infinite alternate; transform-origin: center; }
+  @keyframes traversee {
+    0%   { transform: translate(-25vw, 0) rotate(-6deg); opacity: 0; }
+    5%   { opacity: .9; }
+    18%  { transform: translate(20vw, -8vh) rotate(4deg); }
+    36%  { transform: translate(50vw, 6vh) rotate(-5deg); }
+    54%  { transform: translate(80vw, -6vh) rotate(5deg); opacity: .9; }
+    66%  { transform: translate(110vw, 2vh) rotate(-3deg); opacity: 0; }
+    100% { transform: translate(110vw, 2vh); opacity: 0; }
+  }
+
+  .petit {
+    position: fixed; left: 0; top: 0; z-index: 49; pointer-events: none;
+    width: 34px; height: auto; opacity: .75; will-change: transform;
+    filter: drop-shadow(0 0 10px rgba(255,255,255,.35));
+  }
+  .surgit {
+    position: fixed; z-index: 60; pointer-events: none; height: auto;
+    filter: drop-shadow(0 0 1.5px #0b0908) drop-shadow(0 0 1.5px #0b0908) drop-shadow(0 0 24px rgba(255,106,19,.6));
+  }
+  @keyframes flotte { from { transform: translateY(-6px); } to { transform: translateY(6px); } }
+
+  @media (max-width: 900px) {
+    .grille { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .heros .cadre { grid-template-columns: 1fr; }
+    .affiche-mini { justify-self: start; max-width: 300px; }
+    .pratique .cadre { grid-template-columns: 1fr; gap: 24px; }
+  }
+  @media (max-width: 600px) {
+    .grille { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .legende { flex-direction: column; gap: 2px; padding: 10px; }
+    .legende b { font-size: 14px; }
+    .logo { height: 44px; }
+    nav { gap: 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fantome, .petit { display: none; }
+    * { transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="fond" aria-hidden="true"></div>
+
+<svg class="fantome" viewBox="0 0 120 150" aria-hidden="true">
+  <g class="corps">
+    <path d="M60 6C30 6 12 30 12 62v70c0 6 6 9 11 4l9-9 10 11c4 4 9 4 12 0l6-8 6 8c3 4 8 4 12 0l10-11 9 9c5 5 11 2 11-4V62C108 30 90 6 60 6Z" fill="#f6f1ea" fill-opacity=".92"/>
+    <ellipse cx="43" cy="58" rx="9" ry="13" fill="#0b0908"/>
+    <ellipse cx="77" cy="58" rx="9" ry="13" fill="#0b0908"/>
+    <ellipse cx="60" cy="92" rx="10" ry="14" fill="#0b0908"/>
+    <circle cx="46" cy="53" r="3" fill="#ff6a13"/>
+    <circle cx="80" cy="53" r="3" fill="#ff6a13"/>
+  </g>
+</svg>
+
+<header class="bande">
+  <div class="cadre">
+    <a href="#haut" aria-label="BDE Epitech Bénin"><img class="logo" src="assets/logo-bde.svg" alt="Bureau des Étudiants Epitech Bénin"></a>
+    <nav aria-label="Navigation">
+      <a href="#masques">Les masques</a>
+      <a href="#infos">Infos pratiques</a>
+    </nav>
+  </div>
+</header>
+
+<main id="haut">
+  <section class="heros bande">
+    <div class="cadre">
+      <div>
+        <p class="surtitre">Le BDE présente</p>
+        <h1>Halloween</h1>
+        <p class="accroche">Choisis ton masque avant la soirée. Vingt-trois modèles pour passer de l'étudiant sage au cauchemar ambulant.</p>
+        <ul class="infos">
+          <li><span class="lib">Date</span><span class="val">31 octobre</span></li>
+          <li><span class="lib">Heure</span><span class="val">Dès 19h</span></li>
+          <li><span class="lib">Lieu</span><span class="val">EYA Centre</span></li>
+        </ul>
+        <a class="bouton" href="#masques">Voir les masques</a>
+      </div>
+      <img class="affiche-mini" src="assets/affiche.jpeg" alt="Affiche de la soirée Halloween du BDE : 31 octobre, EYA Centre, à partir de 19h, portez vos déguisements.">
+    </div>
+  </section>
+
+  <div class="date bande" role="note">
+    <div class="cadre">
+      <strong>31 oct</strong>
+      <span>Portez vos déguisements</span>
+      <span>EYA Centre · dès 19h</span>
+    </div>
+  </div>
+
+  <section class="catalogue bande" id="masques">
+    <div class="cadre">
+      <div class="tete">
+        <div>
+          <h2>Les masques</h2>
+          <p>Touche un masque pour l'agrandir. Retiens son numéro pour le demander au stand du BDE.</p>
+        </div>
+        <div class="filtres" role="group" aria-label="Filtrer par style">
+          <button type="button" id="f-tous" data-filtre="tous" aria-pressed="true">Tous</button>
+          <button type="button" id="f-scream" data-filtre="scream" aria-pressed="false">Scream</button>
+          <button type="button" id="f-nonne" data-filtre="nonne" aria-pressed="false">Nonnes</button>
+          <button type="button" id="f-crane" data-filtre="crane" aria-pressed="false">Crânes</button>
+          <button type="button" id="f-creature" data-filtre="creature" aria-pressed="false">Créatures</button>
+          <button type="button" id="f-jason" data-filtre="jason" aria-pressed="false">Jason</button>
+        </div>
+      </div>
+      <ul class="grille" id="grille"></ul>
+    </div>
+  </section>
+
+  <section class="pratique bande" id="infos">
+    <div class="cadre">
+      <div>
+        <h3>Où les trouver</h3>
+        <p>Les masques sont disponibles auprès des membres du BDE avant la soirée, puis sur place à l'EYA Centre.</p>
+      </div>
+      <div>
+        <h3>Comment réserver</h3>
+        <p>Envoie le numéro du masque à un membre du BDE. Les quantités sont limitées, premier arrivé, premier masqué.</p>
+      </div>
+      <div>
+        <h3>La soirée</h3>
+        <p>Samedi 31 octobre à partir de 19h. Déguisement fortement conseillé.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="bande">
+  <div class="cadre">
+    <span>Bureau des Étudiants Epitech Bénin</span>
+    <span>Créativité, diversité, innovation étudiante.</span>
+  </div>
+</footer>
+
+<dialog id="visionneuse" aria-label="Masque agrandi">
+  <div class="boite">
+    <figure>
+      <img id="v-img" src="" alt="">
+      <figcaption><b id="v-nom"></b><span id="v-info"></span></figcaption>
+    </figure>
+    <button type="button" class="fermer" id="v-fermer" aria-label="Fermer">×</button>
+  </div>
+</dialog>
+
+<script>
+  const MASQUES = [
+    { nom: "La Nonne aux yeux verts", style: "nonne" },
+    { nom: "Ghostface langue tirée", style: "scream" },
+    { nom: "La Nonne", style: "nonne" },
+    { nom: "Démon cornu", style: "creature" },
+    { nom: "Spectre hurlant", style: "crane" },
+    { nom: "Grand-mère lippue", style: "creature" },
+    { nom: "Scream ensanglanté", style: "scream" },
+    { nom: "Nonne squelette", style: "nonne" },
+    { nom: "Faucheur noir", style: "crane" },
+    { nom: "Scream classique", style: "scream" },
+    { nom: "Crâne au voile rouge", style: "crane" },
+    { nom: "Scream zombie", style: "scream" },
+    { nom: "Crâne d'argent", style: "crane" },
+    { nom: "Masque à gaz", style: "creature" },
+    { nom: "Crâne fissuré", style: "crane" },
+    { nom: "Vieille sorcière", style: "creature" },
+    { nom: "La Nonne hurlante", style: "nonne" },
+    { nom: "Jason rouge sang", style: "jason", prix: "1 650 FCFA" },
+    { nom: "Jason doré", style: "jason", prix: "1 650 FCFA" },
+    { nom: "Jason noir", style: "jason", prix: "1 650 FCFA" },
+    { nom: "Jason argent", style: "jason", prix: "1 650 FCFA" },
+    { nom: "Jason jaune", style: "jason", prix: "1 650 FCFA" },
+    { nom: "Jason blanc", style: "jason", prix: "1 650 FCFA" }
+  ].map((m, i) => ({ ...m, num: String(i + 1).padStart(2, "0"), prix: m.prix || "3 750 FCFA" }));
+
+  const IMAGES = window.IMAGES_MASQUES || MASQUES.map(m => `assets/masques/masque-${m.num}.jpg`);
+  const grille = document.getElementById("grille");
+  const dlg = document.getElementById("visionneuse");
+
+  grille.innerHTML = MASQUES.map((m, i) => `
+    <li class="fiche" data-style="${m.style}">
+      <button type="button" data-i="${i}" aria-label="Agrandir ${m.nom}, N°${m.num}">
+        <img src="${IMAGES[i]}" alt="${m.nom}" loading="lazy" width="192" height="192">
+        <span class="legende">
+          <span><b>${m.nom}</b><span class="prix">${m.prix}</span></span>
+          <small>N°${m.num}</small>
+        </span>
+      </button>
+    </li>`).join("");
+
+  grille.addEventListener("click", e => {
+    const b = e.target.closest("button[data-i]");
+    if (!b) return;
+    const m = MASQUES[+b.dataset.i];
+    document.getElementById("v-img").src = IMAGES[+b.dataset.i];
+    document.getElementById("v-img").alt = m.nom;
+    document.getElementById("v-nom").textContent = m.nom;
+    document.getElementById("v-info").textContent = `N°${m.num} · ${m.prix}`;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { dlg.showModal(); return; }
+    carteOrigine = b.querySelector("img");
+    // Un fantôme sort de la photo, puis le masque s'agrandit
+    const r = b.querySelector("img").getBoundingClientRect();
+    const f = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    f.setAttribute("viewBox", "0 0 120 150");
+    f.setAttribute("class", "surgit");
+    f.setAttribute("aria-hidden", "true");
+    f.innerHTML = document.querySelector(".fantome .corps").innerHTML;
+    const t = Math.min(r.width * 0.6, 140);
+    Object.assign(f.style, { width: t + "px", left: (r.left + r.width / 2 - t / 2) + "px", top: (r.top + r.height / 2 - t * 0.6) + "px" });
+    document.body.appendChild(f);
+    f.animate([
+      { transform: "translateY(30px) scale(.2)", opacity: 0 },
+      { transform: "translateY(-10px) scale(1.1)", opacity: 1, offset: .35 },
+      { transform: "translateY(-40px) scale(1) rotate(-6deg)", opacity: 1, offset: .7 },
+      { transform: "translateY(-110px) scale(1.4) rotate(8deg)", opacity: 0 }
+    ], { duration: 900, easing: "ease-out" }).onfinish = () => f.remove();
+    setTimeout(ouvrir, 420);
+  });
+  // Agrandissement fluide : le masque grandit depuis sa fiche jusqu'au centre
+  let carteOrigine = null;
+  const boite = dlg.querySelector(".boite");
+  const decalage = () => {
+    const a = carteOrigine.getBoundingClientRect(), z = boite.getBoundingClientRect();
+    const k = a.width / z.width;
+    return `translate(${a.left + a.width / 2 - (z.left + z.width / 2)}px, ${a.top + a.width / 2 - (z.top + z.width / 2)}px) scale(${k})`;
+  };
+  function ouvrir() {
+    dlg.classList.remove("ferme");
+    dlg.showModal();
+    boite.animate([
+      { transform: decalage(), opacity: .6, borderRadius: "0" },
+      { transform: "none", opacity: 1 }
+    ], { duration: 520, easing: "cubic-bezier(.2,.9,.25,1)" });
+  }
+  function fermer() {
+    if (!dlg.open) return;
+    const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduit || !carteOrigine) { dlg.close(); return; }
+    dlg.classList.add("ferme");
+    boite.animate([
+      { transform: "none", opacity: 1 },
+      { transform: decalage(), opacity: 0 }
+    ], { duration: 360, easing: "cubic-bezier(.5,0,.75,0)", fill: "forwards" }).onfinish = a => {
+      dlg.close(); dlg.classList.remove("ferme");
+      boite.getAnimations().forEach(x => x.cancel());
+    };
+  }
+  document.getElementById("v-fermer").addEventListener("click", fermer);
+  dlg.addEventListener("click", e => { if (e.target === dlg) fermer(); });
+  dlg.addEventListener("cancel", e => { e.preventDefault(); fermer(); });
+
+  document.querySelectorAll(".filtres button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const f = btn.dataset.filtre;
+      document.querySelectorAll(".filtres button").forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
+      grille.querySelectorAll(".fiche").forEach(li => { li.hidden = f !== "tous" && li.dataset.style !== f; });
+    });
+  });
+
+  // Petits fantômes qui errent partout sur l'écran
+  (() => {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const modele = document.querySelector(".fantome .corps").innerHTML;
+    const nb = innerWidth < 600 ? 6 : 10;
+    const petits = [];
+    for (let i = 0; i < nb; i++) {
+      const el = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      el.setAttribute("viewBox", "0 0 120 150");
+      el.setAttribute("class", "petit");
+      el.setAttribute("aria-hidden", "true");
+      el.innerHTML = modele;
+      const taille = 22 + Math.random() * 26;
+      el.style.width = taille + "px";
+      document.body.appendChild(el);
+      const ang = Math.random() * Math.PI * 2, v = 0.4 + Math.random() * 0.9;
+      petits.push({ el, x: Math.random() * innerWidth, y: Math.random() * innerHeight,
+        vx: Math.cos(ang) * v, vy: Math.sin(ang) * v, t: Math.random() * 100, taille });
+    }
+    const pas = () => {
+      const W = innerWidth, H = innerHeight;
+      for (const g of petits) {
+        g.t += 0.03;
+        // petit changement de cap aléatoire
+        g.vx += (Math.random() - 0.5) * 0.08; g.vy += (Math.random() - 0.5) * 0.08;
+        const v = Math.hypot(g.vx, g.vy), max = 1.4;
+        if (v > max) { g.vx *= max / v; g.vy *= max / v; }
+        g.x += g.vx; g.y += g.vy;
+        if (g.x < -60) g.x = W + 20; else if (g.x > W + 60) g.x = -20;
+        if (g.y < -60) g.y = H + 20; else if (g.y > H + 60) g.y = -20;
+        const flot = Math.sin(g.t * 3) * 4, sens = g.vx < 0 ? -1 : 1;
+        g.el.style.transform = `translate(${g.x}px, ${g.y + flot}px) scaleX(${sens}) rotate(${g.vx * 6}deg)`;
+      }
+      requestAnimationFrame(pas);
+    };
+    requestAnimationFrame(pas);
+  })();
+</script>
+</body>
+</html>
